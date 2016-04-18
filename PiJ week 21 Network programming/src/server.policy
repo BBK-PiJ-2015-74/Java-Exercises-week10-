@@ -1,0 +1,5 @@
+grant codeBase "file:/Users/lucieburgess/Documents/Birkbeck/Eclipse workspace/PiJ week 21 Network programming/src" {
+	permission java.security.AllPermission;
+	permission java.security.SocketPermission "*:1024-", "accept, resolve";
+};
+
