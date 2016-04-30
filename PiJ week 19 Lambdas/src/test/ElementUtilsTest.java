@@ -1,10 +1,13 @@
-package exercises;
+package test;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
+
+import exercises.ElementUtils;
+import exercises.TwoElementPredicate;
 
 public class ElementUtilsTest {
 	
@@ -42,13 +45,13 @@ public class ElementUtilsTest {
 	
 	public List<Integer> setUpNumbers() {
 		List<Integer> numbers = new LinkedList<>(); 
-		numbers.add((Integer)123);
-		numbers.add((Integer)456);
-		numbers.add((Integer)11111);
-		numbers.add((Integer)3000);
-		numbers.add((Integer)55555);
-		numbers.add((Integer)26708);
-		numbers.add((Integer)0);
+		numbers.add(123);
+		numbers.add(456);
+		numbers.add(11111);
+		numbers.add(3000);
+		numbers.add(55555);
+		numbers.add(26708);
+		numbers.add(10);
 		return numbers;
 	}
 			
@@ -61,7 +64,7 @@ public class ElementUtilsTest {
 		
 		System.out.println("Checking betterElement returns longest string: ");
 		TwoElementPredicate<String> genericfn1 = (t1, t2) -> t1.length() > t2.length(); //lambda gives longest string
-		System.out.println(ElementUtils.betterElement(test1, test2, genericfn1));
+		System.out.println(ElementUtils.betterElement(test1, test2, genericfn1) + "\n");
 	}
 	
 	
@@ -70,7 +73,7 @@ public class ElementUtilsTest {
 		
 		System.out.println("Checking betterElement returns the first string: ");
 		TwoElementPredicate<String> genericfn2 = (t1, t2) -> true; // always returns str1
-		System.out.println(ElementUtils.betterElement(test1, test2, genericfn2));
+		System.out.println(ElementUtils.betterElement(test1, test2, genericfn2) + "\n");
 				
 	}
 	
@@ -186,7 +189,7 @@ public class ElementUtilsTest {
 		List<Integer> evenNumbers = ElementUtils.genericMatches(numbers, i-> i % 2 == 0);
 		Collections.sort(evenNumbers);
 		System.out.println("Finding even numbers using genericMatches :");
-		System.out.println(evenNumbers.toString());
+		System.out.println(evenNumbers.toString() + "\n");
 	}
 	
 	/**
@@ -199,7 +202,7 @@ public class ElementUtilsTest {
 		List<String> words = setUpWords();
 		List<String> excitingWords = ElementUtils.transformedList(words, s -> (s + "!"));
 		System.out.println("Making exciting words using generic transformedList");
-		System.out.println(excitingWords);
+		System.out.println(excitingWords + "\n");
 	}
 	
 	@Test
@@ -207,7 +210,7 @@ public class ElementUtilsTest {
 		List<String> words = setUpWords();
 		List<String> eyeWords = ElementUtils.transformedList(words, s -> s.replace("i", "eye"));
 		System.out.println("Creating eye words using generic transformedList");
-		System.out.println(eyeWords);
+		System.out.println(eyeWords + "\n");
 	}
 	
 	@Test
@@ -215,28 +218,28 @@ public class ElementUtilsTest {
 		List<String> words = setUpWords();
 		List<String> upperCaseWords = ElementUtils.transformedList(words, s -> s.toUpperCase());
 		System.out.println("Creating upper case words using generic transformedList");
-		System.out.println(upperCaseWords);
+		System.out.println(upperCaseWords + "\n");
 	}
 	
 	@Test
-	public void transformedListMultipliesIntegersBy1Million() {
+	public void transformedListMultipliesIntegersByOneHundred() {
 		List<Integer> numbers = setUpNumbers();
 		List<Integer> hundredNumbers = ElementUtils.transformedList(numbers, i -> i*100);
 		System.out.println("Multiplying numbers by 100 using generic transformedList");
-		System.out.println(hundredNumbers);
+		System.out.println(hundredNumbers + "\n");
 	}
 	
 	@Test
 	public void transformedListOmitsZeros() {
 		List<Integer> numbers = setUpNumbers();
 		List<Integer> nonZeroNumbers = ElementUtils.transformedList(numbers, i -> {
-			String str = String.valueOf(i);
+			String str = i.toString();
 			str = str.replaceAll("0","");
 			i = Integer.parseInt(str);
 			return i;
 		});
 		System.out.println("Stripping out zeros using generic transformedList");
-		System.out.println(nonZeroNumbers);
+		System.out.println(nonZeroNumbers + "\n");
 	}
 	
 }
