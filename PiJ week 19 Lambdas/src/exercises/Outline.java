@@ -49,8 +49,7 @@ public class Outline {
 		// Ex 1d, all those that contain the letter 'e' first, everything else second
 		// Uses Collection.sort where the sort method is:
 		// public static <T> void sort(List<T> list, Comparator<? super T> c)
-		// in this case the Comparator is compare - but in the background
-		// int compare (T o1, T o2) where o1 and o2 are the objects to be compared
+		// in this case the Comparator is defined by the lambda expression
 		
 		System.out.println("Sorting array by strings containing the letter 'e' :");
 		Collections.sort(Arrays.asList(stringArray), (x,y) -> {
