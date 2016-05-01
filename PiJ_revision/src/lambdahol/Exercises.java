@@ -346,9 +346,11 @@ public class Exercises {
         
         System.out.println("The length of the longest word is :" + maxK);
         
-        for (Integer K=0; K<=maxK; K++) { // for loop by length of word K
+        Integer K = 0;
+        for (K=1; K<=maxK; K++) { // for loop by length of word K
         	List<String> V = new ArrayList<>();
         	for (String str:output) {
+        		//V = output.stream().filter(s -> s.length() == K).collect(Collectors.toList());
         		if (str.length() == K) V.add(str); 
         		map.put(K,V);
         	}
@@ -412,9 +414,44 @@ public class Exercises {
 // with a value of [bazz] (a one-element list of String).
 
     @Test
-    @Ignore
     public void nestedGrouping() throws IOException {
-        Map<String, Map<Integer, List<String>>> map = null; /* TODO */
+        
+        Map<String, Map<Integer, List<String>>> map = new HashMap<>();
+        
+        String linesjoined = reader.lines().collect(Collectors.joining(","));
+        String[] intermediateoutput = linesjoined.split(REGEXP);
+        
+        List<String> output = new ArrayList<>();
+        for (String s:intermediateoutput) {
+        		output.add(s);
+        	}
+        
+        String K = "";
+        Map<Integer, List<String>> submapV = new HashMap<>();
+        Integer k = 0;
+        
+        for (String str:output) {
+        	K = output.stream().filter(s -> s.equals(str.substring(0))).findFirst().get(); // find Key, e.g. A, i.e. firstletter
+        	System.out.println(K);
+        	// The submap, in turn, is a mapping from the length of the word to a list of words with that length.
+        	Integer maxv = output.stream()
+        						 .filter(s -> s.equals(str.substring(0)))
+        						 .max((s1, s2) -> (s1.length()-s2.length()))
+        						 .get()
+        						 .length();  // finds the length of the longest word beginning with each letter, e.g. A
+        	
+            List<String> v = new ArrayList<>();  
+        	for (k=1; k <= maxv; k++) { //for loop by length of word k to maxV
+        			v = output.stream()
+        					.filter(s -> s.equals(str.substring(0)) && s.length()==k) // WON'T WORK
+        					.collect(Collectors.toList());
+        			submapV.put(k,v);
+                }
+        	map.put(K, submapV);
+        }
+        
+        System.out.println("Exercise 12: word list is :" + output);
+        
 
         assertEquals("[From, Feed]", map.get("F").get(4).toString());
         assertEquals("[by, be, by]", map.get("b").get(2).toString());
