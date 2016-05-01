@@ -1,4 +1,4 @@
-package lambda;
+package lambdahol;
 
 /*
  * For each exercise, develop a solution using Java SE 8 Lambda/Streams
@@ -12,14 +12,11 @@ import org.junit.After;
 import org.junit.Ignore;
 
 import java.io.BufferedReader;
-import java.io.*;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,11 +24,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
