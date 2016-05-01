@@ -14,19 +14,24 @@ import org.junit.Ignore;
 import java.io.BufferedReader;
 import java.io.*;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -62,6 +67,7 @@ public class Exercises {
     @Test
     public void printAllWords() {
         wordList.forEach(System.out::println);
+        System.out.println("\n");
     }
 
     
@@ -179,16 +185,26 @@ public class Exercises {
      * Hint: use String.split(REGEXP) to split a string into words
      * Splitting this way results in "words" that are the empty string,
      * which should be discarded. REGEXP is defined at the bottom of this file.
+     * NB My solution: could have also done the following:
+     * //List<String> linesjoined = new LinkedList<>();
+     * //linesjoined = reader.lines().sequential().collect(Collectors.toList());
+     * //StringBuilder sb = new StringBuilder();
+     * //for (String str:linesjoined) {
+     * //	sb.append(str);
+     * //}   
      */
     @Test
     public void listOfAllWords() throws IOException {
-        List<String> output = new LinkedList<>();
-        Stream<String> lines = reader.lines();
-        StringBuilder sb = new StringBuilder();
-        String str = lines.forEach(sb.append(str));
-        //void forEach(Consumer<? super T> action)
+    	
+        String linesjoined = reader.lines().collect(Collectors.joining(","));
+        String[] intermediateoutput = linesjoined.split(REGEXP);
+        List<String> output = new ArrayList<>();
+        for (String s:intermediateoutput) {
+        	if (!s.equals(REGEXP)) {
+        		output.add(s);
+        	}
+        }
         
-
         assertEquals(
                 Arrays.asList(
                         "From", "fairest", "creatures", "we", "desire", "increase",
@@ -209,12 +225,27 @@ public class Exercises {
                 output);
     }
 
-    // Exercise 8: Create a list containing the words, lowercased, in alphabetical order.
+    // EXERCISE 8 
+    /**
+     * Create a list containing the words, lowercased, in alphabetical order.
+     * @throws IOException
+     */
 
     @Test
-    @Ignore
     public void sortedLowerCase() throws IOException {
-        List<String> output = null; /* TODO */
+    	String linesjoined = reader.lines().sequential().collect(Collectors.joining(","));
+        String[] intermediateoutput = linesjoined.split(REGEXP);
+        
+        List<String> output = new ArrayList<>();
+        for (String s:intermediateoutput) {
+        	if (!s.equals(REGEXP)) {
+        		output.add(s);
+        	}
+        }
+        
+        output = output.stream().map(s -> s.toLowerCase()).collect(Collectors.toList()); //map words to LowerCase, needs to be assigned to output
+        output.sort((s1, s2) -> s1.compareTo(s2)); // doesn't need to be assigned to output because .sort() returns void
+        System.out.println("Exercise 8: printing output of all words after sort:" + output);
 
         assertEquals(
                 Arrays.asList(
@@ -238,15 +269,37 @@ public class Exercises {
     }
 
 
-    // Exercise 9: Sort unique, lower-cased words by length, then alphabetically
-    // within length, and place the result into an output list.
-
-
+    // EXERCISE 9 
+    /**
+     * Sort unique, lower-cased words by length, then alphabetically
+     * within length, and place the result into an output list.
+     */
     @Test
-    @Ignore
     public void sortedLowerCaseDistinctByLengthThenAlphabetically() throws IOException {
-        List<String> output = null; /* TODO */
-
+        
+    	Function<String, String> omitspaces = s -> {
+    		if (!s.equals(REGEXP)) return s;
+    		else return "";
+    	};
+    	
+        String linesjoined = reader.lines().collect(Collectors.joining(","));
+        String[] intermediateoutput = linesjoined.split(REGEXP);
+        
+        List<String> output = new ArrayList<>();
+        for (String s:intermediateoutput) {
+        		output.add(s);
+        	}
+        
+        output = output.stream()
+        		.map(omitspaces) //NB. .map(mapper) where mapper is a Function
+        		.map(s -> s.toLowerCase())
+        		.distinct()
+        		.sorted((s1, s2) -> s1.compareTo(s2))
+        		.sorted((s1, s2) -> (s1.length()-s2.length()))
+        		.collect(Collectors.toList());
+       
+        System.out.println("Exercise 9: mapped to lower case, distinct and sorted by length" + output);
+        
         assertEquals(
                 Arrays.asList(
                         "a", "s", "as", "be", "by", "in", "or", "st", "to", "we",
@@ -265,16 +318,47 @@ public class Exercises {
                 output);
     }
 
-    // Exercise 10: Categorize the words into a map, where the map's key is
-    // the length of each word, and the value corresponding to a key is a
-    // list of words of that length. Don't bother with uniqueness or lower-
-    // casing the words.
-
-
+    // EXERCISE 10: 
+    /**
+     * Categorize the words into a map, where the map's key is
+     * the length of each word, and the value corresponding to a key is a
+     * list of words of that length. Don't bother with uniqueness or lower-casing the words.
+     * public V put (K key, V value)
+     * @throws IOException
+     */
     @Test
-    @Ignore
     public void mapLengthToWordList() throws IOException {
-        Map<Integer, List<String>> map = null; /* TODO */
+  
+    	//Integer is the length of each word
+    	//List<String> is the list of words of length Integer
+    	//No need to sort alphabetically within the word length in this exercise
+    	//Converting Optional<T> to <T> - just use .get()
+    	
+        Map<Integer, List<String>> map = new HashMap<>();
+        
+        String linesjoined = reader.lines().collect(Collectors.joining(","));
+        String[] intermediateoutput = linesjoined.split(REGEXP);
+        
+        List<String> output = new ArrayList<>();
+        for (String s:intermediateoutput) {
+        		output.add(s);
+        	}
+        
+        output = output.stream()
+        		.sorted((s1, s2) -> (s1.length()-s2.length()))
+        		.collect(Collectors.toList());
+        
+        Integer maxK = output.stream().max((s1, s2) -> (s1.length()-s2.length())).get().length();  
+        
+        System.out.println("The length of the longest word is :" + maxK);
+        
+        for (Integer K=0; K<=maxK; K++) { // for loop by length of word K
+        	List<String> V = new ArrayList<>();
+        	for (String str:output) {
+        		if (str.length() == K) V.add(str); 
+        		map.put(K,V);
+        	}
+        }        
 
         assertEquals(6, map.get(7).size());
         assertEquals(Arrays.asList("increase", "ornament"), map.get(8));
@@ -283,15 +367,37 @@ public class Exercises {
         assertEquals(Arrays.asList("substantial"), map.get(11));
         assertFalse(map.containsKey(12));
     }
-    // Exercise 11: Gather the words into a map, accumulating a count of the
-    // number of occurrences of each word. Don't worry about upper case and
-    // lower case.
-
-  @Test
-    @Ignore
+    
+    // EXERCISE 11: 
+    /**
+     * Gather the words into a map, accumulating a count of the
+     * number of occurrences of each word. Don't worry about upper case and lower case.
+     * String is the key K, the values are the word frequency
+     * @throws IOException
+     */
+    @Test
     public void wordFrequencies() throws IOException {
-        Map<String, Long> map = null; /* TODO */
+        
+    	Map<String, Long> map = new HashMap<>();
+        
+        String linesjoined = reader.lines().collect(Collectors.joining(","));
+        String[] intermediateoutput = linesjoined.split(REGEXP);
+        
+        List<String> output = new ArrayList<>();
+        for (String s:intermediateoutput) {
+        		output.add(s);
+        	}
 
+        //output is a list of all the words that occur
+        
+        Long V = (long) 0;
+        String K = "";
+        for (String str:output) {
+        	V = output.stream().filter(s -> s.equals(str)).count();
+        	K = output.stream().filter(s -> s.equals(str)).findFirst().get();
+        	map.put(K, V);
+        }
+        
         assertEquals(2L, (long) map.get("tender"));
         assertEquals(6L, (long) map.get("the"));
         assertEquals(1L, (long) map.get("churl"));
