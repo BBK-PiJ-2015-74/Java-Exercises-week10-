@@ -239,7 +239,6 @@ public class Exercises {
         
         output = output.stream().map(s -> s.toLowerCase()).collect(Collectors.toList()); //map words to LowerCase, needs to be assigned to output
         output.sort((s1, s2) -> s1.compareTo(s2)); // doesn't need to be assigned to output because .sort() returns void
-        System.out.println("Exercise 8: printing output of all words after sort:" + output);
 
         assertEquals(
                 Arrays.asList(
@@ -291,8 +290,6 @@ public class Exercises {
         		.sorted((s1, s2) -> s1.compareTo(s2))
         		.sorted((s1, s2) -> (s1.length()-s2.length()))
         		.collect(Collectors.toList());
-       
-        System.out.println("Exercise 9: mapped to lower case, distinct and sorted by length" + output);
         
         assertEquals(
                 Arrays.asList(
@@ -402,17 +399,18 @@ public class Exercises {
         assertFalse(map.containsKey("java8"));
     }
 
-    // Exercise 12: Create a nested grouping, where the outer map is a map
-// from the first letter of the word to a submap. (Use a string of length
-// one as the key.) The submap, in turn, is a mapping from the length of the
-// word to a list of words with that length. Don't bother with any downcasing
-// or uniquifying of the words.
-//
-// For example, given the words "foo bar baz bazz" the top level map would have
-// a keys of "f" and "b". The value corresponding to "b" would be a map with
-// a key of 3 with a value of [bar baz] (a list of Strings) and a key of 4
-// with a value of [bazz] (a one-element list of String).
-
+    // EXERCISE 12 
+    /**
+     * Create a nested grouping, where the outer map is a map
+     * from the first letter of the word to a submap. (Use a string of length
+     * one as the key.) The submap, in turn, is a mapping from the length of the
+     * word to a list of words with that length. Don't bother with any downcasing or uniquifying of the words.
+     * For example, given the words "foo bar baz bazz" the top level map would have
+     * a keys of "f" and "b". The value corresponding to "b" would be a map with
+     * a key of 3 with a value of [bar baz] (a list of Strings) and a key of 4
+     * with a value of [bazz] (a one-element list of String).
+     * @throws IOException
+     */
     @Test
     public void nestedGrouping() throws IOException {
         
@@ -424,34 +422,38 @@ public class Exercises {
         List<String> output = new ArrayList<>();
         for (String s:intermediateoutput) {
         		output.add(s);
-        	}
+        	}      
+        output = output.stream().sorted((s1, s2) -> s1.substring(0,1).compareTo(s2.substring(0,1))).collect(Collectors.toList());
         
-        String K = "";
-        Map<Integer, List<String>> submapV = new HashMap<>();
-        Integer k = 0;
-        
+        List<String> keys = new ArrayList<>();
         for (String str:output) {
-        	K = output.stream().filter(s -> s.equals(str.substring(0))).findFirst().get(); // find Key, e.g. A, i.e. firstletter
-        	System.out.println(K);
-        	// The submap, in turn, is a mapping from the length of the word to a list of words with that length.
-        	Integer maxv = output.stream()
-        						 .filter(s -> s.equals(str.substring(0)))
-        						 .max((s1, s2) -> (s1.length()-s2.length()))
-        						 .get()
-        						 .length();  // finds the length of the longest word beginning with each letter, e.g. A
-        	
-            List<String> v = new ArrayList<>();  
-        	for (k=1; k <= maxv; k++) { //for loop by length of word k to maxV
-        			v = output.stream()
-        					.filter(s -> s.equals(str.substring(0)) && s.length()==k) // WON'T WORK
-        					.collect(Collectors.toList());
-        			submapV.put(k,v);
-                }
-        	map.put(K, submapV);
+        	keys.add(str.substring(0,1));
         }
         
-        System.out.println("Exercise 12: word list is :" + output);
+        keys = keys.stream().distinct().collect(Collectors.toList());
         
+        System.out.println("Here is a list of all the top-level keys at line 443 :" + keys); 
+        	
+        for (String K:keys) {
+        	Map<Integer, List<String>> submapV = new HashMap<>(); // must be initialised inside the loop as we need a new one for each key K
+        	// The submap, in turn, is a mapping from the length of the word to a list of words with that length.
+ 
+        	Integer maxv = output.stream()
+        						 .filter(s -> s.substring(0,1).equals(K))
+        						 .max((s1, s2) -> (s1.length()-s2.length()))
+        						 .get()
+        						 .length();  // finds the length of the longest word beginning with each letter Key, e.g. A
+        	
+            List<String> v = new ArrayList<>();  
+        	for (Integer k=0; k <= maxv; k++) { // k is the integer key to the submap
+        			final int z = k; // needed for streams
+        			v = output.stream()
+        					.filter(s -> s.substring(0,1).equals(K) && s.length()==z) 
+        					.collect(Collectors.toList());
+        			submapV.put(z,v);
+        	}
+        	map.put(K, submapV);
+        }
 
         assertEquals("[From, Feed]", map.get("F").get(4).toString());
         assertEquals("[by, be, by]", map.get("b").get(2).toString());
